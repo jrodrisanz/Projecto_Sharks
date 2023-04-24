@@ -28,15 +28,16 @@ Comprobamos también si existe alguna columna duplicada y descubrimos que hay 3 
 
 Para realizar una limpieza de datos más exhaustiva, vamos a ir analizando el contenido de las columnas una por una, investigando el resto de valores nulos o inconsistentes.
 
-    -Columna Fatal(Y/N): para rellenar los valores nulos, comprobamos si la palabra "FATAL" se encuentra en la columna "Injury" y rellenamos con "Y" si está o con "N" si no está.
+-Columna Fatal(Y/N): para rellenar los valores nulos, comprobamos si la palabra "FATAL" se encuentra en la columna "Injury" y rellenamos con "Y" si está o con "N" si no está.
 
             data['Fatal(Y/N)'] = data.apply(lambda x: "Y" if "FATAL" in x['Injury'] else "N" if pd.isnull(x['Fatal(Y/N)']) else x['Fatal(Y/N)'], axis=1)
 
-    -Columna Área y Location: rellenamos los valores de la columna "Área" con los valores de la columna "Country" y los valores de la columna "Location" con los valores de la columna "Área".
+-Columna Área y Location: rellenamos los valores de la columna "Área" con los valores de la columna "Country" y los valores de la columna "Location" con los valores de la columna "Área".
 
-    -Columna Sex: reemplazamos los valores que no son ni "M" ni "F" con "unknown", analizamos los valores residuales y los clasificamos como "unknown".
-    
-    -Columna Activity: hay una gran catidad de categorías, por lo que elegimos sintetizarlas en categorías más generales:
+-Columna Sex: reemplazamos los valores que no son ni "M" ni "F" con "unknown", analizamos los valores residuales y los clasificamos como "unknown".
+
+-Columna Activity: hay una gran catidad de categorías, por lo que elegimos sintetizarlas en categorías más generales:
+
     reemplazos = {'surf': 'Surfing', 'swim': 'Swimming', 'fishing': 'Fishing', 'spearfish': 'Spearfishing', 'bath': 'Bathing', 'wade': 'Wading', 'dive': 'Diving', 'stand': 'Standing', 'snorkel': 'Snorkeling'}
 
             for i in range(len(data['Activity'])):
@@ -48,13 +49,13 @@ Para realizar una limpieza de datos más exhaustiva, vamos a ir analizando el co
 
             data['Activity'] = data['Activity'].replace(reemplazos.values(), reemplazos.keys())
 
-    -Columna Date: rellenamos los valores nulos con el valor más reciente y trasnformamos la columna un formato general.
+-Columna Date: rellenamos los valores nulos con el valor más reciente y trasnformamos la columna un formato general.
 
             data["CaseNumber"] = pd.to_datetime(data["CaseNumber"], errors='coerce')
             data["CaseNumber"].fillna(method="ffill", inplace=True)
             data["Date"] = data["CaseNumber"].apply(lambda x: x.strftime("%Y-%m-%d %H:%M:%S"))
 
-    -Columna Type: trasnformamos los valores de la columna a uns categorías más entendibles: Attacks, Accidents, Unknown
+-Columna Type: trasnformamos los valores de la columna a uns categorías más entendibles: Attacks, Accidents, Unknown
 
             for i in range(len(data['Type'])):
                 if data['Type'][i] in ['Questionable', 'Boatomg']:
@@ -66,7 +67,7 @@ Para realizar una limpieza de datos más exhaustiva, vamos a ir analizando el co
                 else:
                     data['Type'][i] = 'Unknown'
 
-    -Resto de columnas: rellenamos los nulos con "unknown"
+-Resto de columnas: rellenamos los nulos con "unknown"
 
 
 
